@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>掲示板</title>
+</head>
+<body>
+    <div class="contents">
+        {% load replace_url %}
+        {% load new_line %}
+        {% load anchor %}
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+        {% for object in all_objects %}
+            <p id="{{ object.id }}"> {{ object.id }}. {{ object.pub_date }}</p>
+            {% autoescape off %}
+                <p>{{ object.main_text | escape | anchor | replace_url | new_line }}</p>
+            {% endautoescape %}
+            {% if object.image %}
+                <p>{{ object.image.width_field }}</p>
+                <img src="{{ object.image.url }}" width="480" >
+                <br />
+            {% endif %}
+            <hr />
+        {% endfor %}
+    </div>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>本文：<br>
+            <textarea maxlength="500" name="main_text" rows="5" cols="50"></textarea>
+        </label>
+        <br>
+        <input type="file"  name="image_file"> <br>
+        <input type="submit" value="送信">
+    </form>
+</body>
+</html>
